@@ -3,6 +3,8 @@ showNotes();
 
 let addTxt = document.getElementById('addTxt');
 let addBtn = document.getElementById('addBtn');
+let addtitle = document.getElementById('title');
+
 addBtn.addEventListener("click", function() {
     if (addBtn.innerText == "Add Note") {
         let notes = localStorage.getItem('notes');
@@ -11,15 +13,27 @@ addBtn.addEventListener("click", function() {
         } else {
             notesObj = JSON.parse(notes);
         }
-
-        notesObj.push(addTxt.value);
+        let myObj = {
+            title: addtitle.value,
+            text: addTxt.value
+        }
+        console.log(myObj);
+        notesObj.push(myObj);
         localStorage.setItem("notes", JSON.stringify(notesObj));
-        addTxt.value = "";
+        myObj.value = "";
         showNotes();
     } else if (addBtn.innerText == "Edit Note") {
         let notes = localStorage.getItem('notes');
         notesObj = JSON.parse(notes);
+        // console.log(notesObj);
         notesObj[parseInt(addBtn.getAttribute("name"))] = addTxt.value;
+        // notesObj[parseInt(addBtn.getAttribute("name"))] = addtitle;
+        console.log(notesObj);
+        // notesObj.findIndex(element, index) => {
+        //     addtitle.value = element.title;
+        //     addTxt.value = element.text;
+        // })
+
         localStorage.setItem("notes", JSON.stringify(notesObj));
         addTxt.value = "";
         addBtn.innerText = "Edit Note";
@@ -40,8 +54,9 @@ function showNotes() {
         html += `
         <div class="notecard my-2 mx-2 card" style="width: 18rem;">
             <div class="card-body">
-                <h5 class="card-title">Note${index +1}</h5>
-                <p class="card-text">${element}</p>
+                <h5 class="card-counter">Note${index +1}</h5>
+                <h3 class="card-title">${element.title}</h3>
+                <p class="card-text">${element.text}</p>
                 <a id="${index}" onclick="deletenotes(this.id)" class="btn btn-primary">Delete Note</a>
                 <a id="${index}" onclick="Editnotes(this.id)" class="btn btn-primary">Edit Note</a>
             </div>
@@ -76,7 +91,12 @@ function Editnotes(index) {
         notesObj = JSON.parse(notes);
     }
     notesObj = JSON.parse(notes);
-    addTxt.value = notesObj[index];
+    // console.log(notesObj[index]);
+    let add = notesObj[index];
+    // console.log(add);
+    addTxt.value = add.text;
+    addtitle.value = add.title;
+
     addBtn.innerText = "Edit Note";
     addBtn.setAttribute("name", index.toString())
 }
